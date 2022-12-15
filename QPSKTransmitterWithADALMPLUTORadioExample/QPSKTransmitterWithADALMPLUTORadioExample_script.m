@@ -1,7 +1,9 @@
 clear all;
 clc;
+
 %% QPSK Transmitter with ADALM-PLUTO Radio
-% This example shows how to use the ADALM-PLUTO Radio System objects to implement 
+% This example s
+% hows how to use the ADALM-PLUTO Radio System objects to implement 
 % a QPSK transmitter. The ADALM-PLUTO radio in this system will keep transmitting 
 % indexed "Hello world" messages at its specified center frequency. You can demodulate 
 % the transmitted message using the <matlab:openExample('plutoradio/QPSKReceiverWithADALMPLUTORadioExample.m') 

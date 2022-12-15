@@ -1,3 +1,6 @@
+clear all;
+clc;
+
 %% QPSK Receiver with ADALM-PLUTO Radio
 % This example shows how to use the ADALM-PLUTO Radio System objects
 % to implement a QPSK receiver. The receiver addresses
