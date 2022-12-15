@@ -76,6 +76,9 @@ classdef QPSKDataDecoder < matlab.System
                 deScrData = obj.pDescrambler( ...
                     demodOut(obj.HeaderLength + (1 : obj.PayloadLength)));
                 
+                % provavelmente eh nesse ponto que precisa fazer o decode e
+                % formatar pra ficar o tamanho necessário ( acho que não
+                % tem problema manter o 11 ao inves do 7)
                 % Recovering the message from the data
                 charSet = int8(bit2int(deScrData, 7));
                 if(obj.PrintOption)

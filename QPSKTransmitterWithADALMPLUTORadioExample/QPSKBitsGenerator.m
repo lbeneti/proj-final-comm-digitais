@@ -44,7 +44,7 @@ classdef QPSKBitsGenerator < matlab.System
             
             % Initialize signal source
             obj.pSigSrc = dsp.SignalSource(obj.MessageBits, ...
-                'SamplesPerFrame', obj.MessageLength * 7 * obj.NumberOfMessage, ...
+                'SamplesPerFrame', obj.MessageLength * 15 * obj.NumberOfMessage, ...% aqui tbm acho que tem que mudar o 7 pra 15
                 'SignalEndAction', 'Cyclic repetition');
             
         end

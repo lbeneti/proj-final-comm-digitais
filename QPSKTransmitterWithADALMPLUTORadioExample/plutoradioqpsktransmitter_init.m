@@ -17,7 +17,7 @@ SimParams.HeaderLength    = SimParams.BarkerLength * 2;                   % Dupl
 SimParams.Message         = 'Hello world';
 SimParams.MessageLength   = length(SimParams.Message) + 5;                % 'Hello world 000\n'...
 SimParams.NumberOfMessage = 100;                                          % Number of messages in a frame
-SimParams.PayloadLength   = SimParams.NumberOfMessage * SimParams.MessageLength * 7; % 7 bits per characters
+SimParams.PayloadLength   = SimParams.NumberOfMessage * SimParams.MessageLength * 15; % 7 bits por ASCII char (15 bits pra acomodar os encoded)
 SimParams.FrameSize       = (SimParams.HeaderLength + SimParams.PayloadLength) ...
     / log2(SimParams.ModulationOrder);                                    % Frame size in symbols
 SimParams.FrameTime       = SimParams.Tsym*SimParams.FrameSize;
@@ -35,8 +35,10 @@ for msgCnt = 0 : 99
     msgSet(msgCnt * SimParams.MessageLength + (1 : SimParams.MessageLength)) = ...
         sprintf('%s %03d\n', SimParams.Message, msgCnt);
 end
-bits = de2bi(msgSet, 7, 'left-msb')';
-SimParams.MessageBits = bits(:);
+bits = de2bi(msgSet, 11, 'left-msb')';
+encoded_bits = encode(bits', 15,11, 'Hamming/binary');
+encoded_bits = encoded_bits';
+SimParams.MessageBits = encoded_bits(:); % aqui faz a transposta e pode codificar pra codigo Hamming
 
 % Pluto transmitter parameters
 SimParams.PlutoCenterFrequency      = 915e6;
