@@ -9,9 +9,9 @@ classdef (StrictDefaults)QPSKTransmitter < matlab.System
         ScramblerBase = 2;
         ScramblerPolynomial = [1 1 1 0 1];
         ScramblerInitialConditions = [0 0 0 0];
-        RolloffFactor = 0.5 % da pra mudar
-        RaisedCosineFilterSpan = 10 % pesquisar no que afeta
-        NumberOfMessage = 10 % pesquisar no que afeta
+        RolloffFactor = 0.5
+        RaisedCosineFilterSpan = 10
+        NumberOfMessage = 10
         MessageLength = 16
         MessageBits = []
     end

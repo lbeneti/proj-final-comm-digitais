@@ -42,9 +42,14 @@ classdef QPSKBitsGenerator < matlab.System
                 obj.ScramblerPolynomial, ...
                 obj.ScramblerInitialConditions);
             
+            % codificacao convolucional
+            % pro default, dobra o tamanho da mensagem (tem que mudar o
+            % MessageLength tambme de alguma forma)
+            % convEncoder = comm.ConvolutionalEncoder;
+            obj.MessageBits = comm.ConvolutionalEncoder(obj.MessageBits);
             % Initialize signal source
             obj.pSigSrc = dsp.SignalSource(obj.MessageBits, ...
-                'SamplesPerFrame', obj.MessageLength * 15 * obj.NumberOfMessage, ...% aqui tbm acho que tem que mudar o 7 pra 15
+                'SamplesPerFrame', obj.MessageLength * 7 * 2 * obj.NumberOfMessage, ...% multiplicando X 2 pro causa do encode
                 'SignalEndAction', 'Cyclic repetition');
             
         end

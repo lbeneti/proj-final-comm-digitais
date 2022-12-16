@@ -30,6 +30,7 @@ classdef (StrictDefaults)QPSKReceiver < matlab.System
         DescramblerInitialConditions = [0 0 0 0];
         BerMask = [];
         PrintOption = false;
+        Message = 'Hello World'; % tem que ver se nontunable eh o correto
     end
     
     properties (Access = private)
@@ -49,8 +50,8 @@ classdef (StrictDefaults)QPSKReceiver < matlab.System
     properties (Access = private, Constant)
         pUpdatePeriod = 4 % Defines the size of vector that will be processed in AGC system object
         pModulatedHeader = sqrt(2)/2 * (-1-1i) * [+1; +1; +1; +1; +1; -1; -1; +1; +1; -1; +1; -1; +1];
-        pMessage = 'Hello world';
-        pMessageLength = 16;
+        % pMessage = 'Hello world';
+        % pMessageLength = 16;
     end
     
     methods
@@ -119,6 +120,7 @@ classdef (StrictDefaults)QPSKReceiver < matlab.System
                 'DescramblerPolynomial',    obj.DescramblerPolynomial, ...
                 'DescramblerInitialConditions', obj.DescramblerInitialConditions, ...
                 'BerMask',                  obj.BerMask, ...
+                'Message',                  obj.Message, ... % ver o que tem de mensagem aqui
                 'PrintOption',              obj.PrintOption);
         end
         

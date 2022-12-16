@@ -16,8 +16,8 @@ SimParams.BarkerLength    = length(SimParams.BarkerCode);
 SimParams.HeaderLength    = SimParams.BarkerLength * 2;                   % Duplicate 2 Barker codes to be as a header
 SimParams.Message         = 'Hello world';
 SimParams.MessageLength   = length(SimParams.Message) + 5;                % 'Hello world 000\n'...
-SimParams.NumberOfMessage = 100;                                          % Number of messages in a frame
-SimParams.PayloadLength   = SimParams.NumberOfMessage * SimParams.MessageLength * 7; % 7 bits per characters
+SimParams.NumberOfMessage = 100;                                          % aumentar para 999 ajuda na BER final
+SimParams.PayloadLength   = SimParams.NumberOfMessage * SimParams.MessageLength * 7 * 2; % 7 bits per characters
 SimParams.FrameSize       = (SimParams.HeaderLength + SimParams.PayloadLength) ...
     / log2(SimParams.ModulationOrder);                                    % Frame size in symbols
 SimParams.FrameTime       = SimParams.Tsym*SimParams.FrameSize;
@@ -47,22 +47,23 @@ SimParams.TimingErrorDetectorGain       = 2.7*2*K*A^2+2.7*2*K*A^2;
 SimParams.PreambleDetectorThreshold     = 0.8;
 
 %% Message generation and BER calculation parameters
-msgSet = zeros(100 * SimParams.MessageLength, 1);
-for msgCnt = 0 : 99
+msgSet = zeros(SimParams.NumberOfMessage * SimParams.MessageLength, 1);
+for msgCnt = 0 : SimParams.NumberOfMessage - 1 % pra poder variar de acordo com o numero de msgs
     msgSet(msgCnt * SimParams.MessageLength + (1 : SimParams.MessageLength)) = ...
         sprintf('%s %03d\n', SimParams.Message, msgCnt);
 end
+
 bits = de2bi(msgSet, 7, 'left-msb')';
 SimParams.MessageBits = bits(:);
 
 % For BER calculation masks
-SimParams.BerMask = zeros(SimParams.NumberOfMessage * length(SimParams.Message) * 7, 1);
+SimParams.BerMask = zeros(SimParams.NumberOfMessage * length(SimParams.Message) * 7, 1); % aqui deve ter que mexer tbm
 for i = 1 : SimParams.NumberOfMessage
     SimParams.BerMask( (i-1) * length(SimParams.Message) * 7 + ( 1: length(SimParams.Message) * 7) ) = ...
         (i-1) * SimParams.MessageLength * 7 + (1: length(SimParams.Message) * 7);
 end
 % Pluto receiver parameters
-SimParams.PlutoCenterFrequency      = 915e6;
+SimParams.PlutoCenterFrequency      = 1000e6;
 SimParams.PlutoGain                 = 30;
 SimParams.PlutoFrontEndSampleRate   = SimParams.Fs;
 SimParams.PlutoFrameLength          = SimParams.Interpolation * SimParams.FrameSize;

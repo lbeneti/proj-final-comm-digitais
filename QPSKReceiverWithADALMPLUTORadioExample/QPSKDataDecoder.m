@@ -3,7 +3,10 @@ classdef QPSKDataDecoder < matlab.System
 
     % Copyright 2012-2021 The MathWorks, Inc.
     
-    properties (Nontunable)
+    % o principal motivo de ter mudado pra public eh para conseguir fazer a
+    % sobrescrita da mensagem que tah sendo enviada, e dessa forma,
+    % consegue comparar corretamente os bits necessarios
+    properties (Access = public)
         ModulationOrder = 4; 
         HeaderLength = 26;
         PayloadLength = 2240;
@@ -13,6 +16,8 @@ classdef QPSKDataDecoder < matlab.System
         DescramblerInitialConditions = [0 0 0 0];
         BerMask = [];
         PrintOption = false;
+        Message = 'Hello world';
+        pMessageLength = 16;
     end
     
     properties (Access = private)
@@ -27,8 +32,6 @@ classdef QPSKDataDecoder < matlab.System
     properties (Constant, Access = private)
         pBarkerCode = [+1; +1; +1; +1; +1; -1; -1; +1; +1; -1; +1; -1; +1]; % Bipolar Barker Code
         pModulatedHeader = sqrt(2)/2 * (-1-1i) * QPSKDataDecoder.pBarkerCode;
-        pMessage = 'Hello world';
-        pMessageLength = 16;
     end
     
     methods
@@ -53,12 +56,17 @@ classdef QPSKDataDecoder < matlab.System
             
             % Since we only calculate BER on message part, 000s are not
             % necessary here, they are just place-holder.
+            % seria bom ver se a partir desse ponto, o obj.Message tem outro 
+            % valor ou eh o setado nas primerias propriedades
+            obj.pMessageLength = length(obj.Message) + 5;
+
             msgSet = zeros(obj.NumberOfMessage * obj.pMessageLength, 1);
             for msgCnt = 0 : obj.NumberOfMessage - 1
                 msgSet(msgCnt * obj.pMessageLength + (1 : obj.pMessageLength)) = ...
                     sprintf('%s %03d\n', obj.pMessage, mod(msgCnt, 100));
             end
-            obj.pTargetBits = int2bit(msgSet, 7);
+            % aqui se consegue a stream target para comparacao na BER
+            obj.pTargetBits = int2bit(msgSet, 7); 
         end
         
         function  BER = stepImpl(obj, data, isValid)
@@ -76,10 +84,12 @@ classdef QPSKDataDecoder < matlab.System
                 deScrData = obj.pDescrambler( ...
                     demodOut(obj.HeaderLength + (1 : obj.PayloadLength)));
                 
-                % provavelmente eh nesse ponto que precisa fazer o decode e
-                % formatar pra ficar o tamanho necessário ( acho que não
-                % tem problema manter o 11 ao inves do 7)
                 % Recovering the message from the data
+                % criacao de um decoder com os parametros necessarios pra
+                % esse caso
+                vDec = comm.ViterbiDecoder('InputFormat','Hard','TerminationMethod','Truncated');
+                deScrData = vDec(deScrData);
+                
                 charSet = int8(bit2int(deScrData, 7));
                 if(obj.PrintOption)
                     fprintf('%s', char(charSet));

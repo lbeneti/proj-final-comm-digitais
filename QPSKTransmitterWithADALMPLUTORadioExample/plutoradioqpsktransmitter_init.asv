@@ -39,11 +39,11 @@ bits = de2bi(msgSet, 7, 'left-msb')';
 SimParams.MessageBits = bits(:);
 
 % Pluto transmitter parameters
-SimParams.PlutoCenterFrequency      = 1000e6; % deixar alinhado com o receptor
+SimParams.PlutoCenterFrequency      = 915e6; % deixar alinhado com o receptor
 SimParams.PlutoGain                 = 0;
 SimParams.PlutoFrontEndSampleRate   = SimParams.Fs;
 SimParams.PlutoFrameLength          = SimParams.Interpolation * SimParams.FrameSize;
 
 % Simulation Parameters
 SimParams.FrameTime = SimParams.PlutoFrameLength/SimParams.PlutoFrontEndSampleRate;
-SimParams.StopTime  = 1000; % aumentar esse tempo pode ajudar a diminuir a BER
+SimParams.StopTime  = 1000; % pode ajudar a di
